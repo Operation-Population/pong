@@ -35,29 +35,48 @@ surround.setParent(ground);
 glass.setParent(ground);
 scoreBoard.setParent(ground);
 
-//Position fill
-
-ground.addComponent(
+floor.addComponent(
   new Transform({
-    position: new Vector3(48.0, 0.88, 59.0),
+    position: new Vector3(56.0, 0.0, 56.0),
     scale: new Vector3(1.0, 1.0, 1.0),
     rotation: new Quaternion().setEuler(0.0, 270.0, 0.0),
   })
 );
+Dash_Tweaker(floor);
+//Position fill
 
-glass.addComponent(
+ground.addComponent(
   new Transform({
-    position: new Vector3(0.0, -25.0, 0.0),
-    scale: new Vector3(1.0, 1.4, 1.0),
+    position: new Vector3(56.0, 10.88, 57.0),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(0.0, 270.0, 0.0),
+  })
+);
+// Dash_Tweaker(ground);
+// Dome position
+surround.addComponent(
+  new Transform({
+    position: new Vector3(0.0, 0.0, 0.0),
+    scale: new Vector3(1.0, 1.37, 1.0),
     rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
   })
 );
-Dash_Tweaker(glass);
+// Dash_Tweaker(surround);
+glass.addComponent(
+  new Transform({
+    position: new Vector3(0.0, -25.0, 0.0),
+    scale: new Vector3(1.0, 1.4, 1.11),
+    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
+  })
+);
+// Dash_Tweaker(glass);
+
+// wa(glass);
 
 arche1.addComponent(
   new Transform({
     position: new Vector3(0.4, 0.0, 0.0),
-    scale: new Vector3(1.0, 1.5, 1.3),
+    scale: new Vector3(1.0, 1.5, 1.0),
     rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
   })
 );
@@ -65,7 +84,7 @@ arche1.addComponent(
 arche2.addComponent(
   new Transform({
     position: new Vector3(28.0, 0.0, 0.0),
-    scale: new Vector3(1.0, 1.5, 1.3),
+    scale: new Vector3(1.0, 1.5, 1.0),
     rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
   })
 );
@@ -78,6 +97,7 @@ scoreBoard.addComponent(
   })
 );
 
+engine.addEntity(floor);
 engine.addEntity(ground);
 
 //Server
