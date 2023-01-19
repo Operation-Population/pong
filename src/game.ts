@@ -1,6 +1,6 @@
 import { Dash_TriggerZone, Dash_Tweaker } from "dcldash";
-let ats = 0;
-let bts = 0;
+let blueTeamScore = 0;
+let redTeamScore = 0;
 //Entities
 const disk = new Entity();
 const goalPost = new Entity();
@@ -8,7 +8,7 @@ const scoreBoard = new Entity();
 const arche1 = new Entity();
 const arche2 = new Entity();
 const glass = new Entity();
-const ground = new Entity();
+const field = new Entity();
 const surround = new Entity();
 const floor = new Entity();
 
@@ -24,16 +24,17 @@ scoreBoard.addComponent(
 arche1.addComponent(new GLTFShape("models/PongChamp_Env_arche1.glb"));
 arche2.addComponent(new GLTFShape("models/PongChamp_Env_arches.glb"));
 glass.addComponent(new GLTFShape("models/PongChamp_Env_ArenaGlass.glb"));
-ground.addComponent(new GLTFShape("models/PongChamp_Env_ArenaGround.glb"));
+field.addComponent(new GLTFShape("models/PongChamp_Env_ArenaGround.glb"));
 surround.addComponent(new GLTFShape("models/PongChamp_Env_ArenaSurround.glb"));
 floor.addComponent(new GLTFShape("models/PongChamp_Env_Floor.glb"));
 
-arche1.setParent(ground);
-arche2.setParent(ground);
-goalPost.setParent(ground);
-surround.setParent(ground);
-glass.setParent(ground);
-scoreBoard.setParent(ground);
+arche1.setParent(floor);
+arche2.setParent(floor);
+field.setParent(floor);
+goalPost.setParent(field);
+surround.setParent(field);
+glass.setParent(field);
+scoreBoard.setParent(arche1);
 
 floor.addComponent(
   new Transform({
@@ -42,70 +43,60 @@ floor.addComponent(
     rotation: new Quaternion().setEuler(0.0, 270.0, 0.0),
   })
 );
-Dash_Tweaker(floor);
 //Position fill
-
-ground.addComponent(
-  new Transform({
-    position: new Vector3(56.0, 10.88, 57.0),
-    scale: new Vector3(1.0, 1.0, 1.0),
-    rotation: new Quaternion().setEuler(0.0, 270.0, 0.0),
-  })
-);
-// Dash_Tweaker(ground);
-// Dome position
-surround.addComponent(
-  new Transform({
-    position: new Vector3(0.0, 0.0, 0.0),
-    scale: new Vector3(1.0, 1.37, 1.0),
-    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
-  })
-);
-// Dash_Tweaker(surround);
-glass.addComponent(
-  new Transform({
-    position: new Vector3(0.0, -25.0, 0.0),
-    scale: new Vector3(1.0, 1.4, 1.11),
-    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
-  })
-);
-// Dash_Tweaker(glass);
-
-// wa(glass);
-
+// Dash_Tweaker(floor);
 arche1.addComponent(
   new Transform({
-    position: new Vector3(0.4, 0.0, 0.0),
-    scale: new Vector3(1.0, 1.5, 1.0),
+    position: new Vector3(0.0, 0.0, 0.0),
+    scale: new Vector3(1.0, 1.0, 1.0),
     rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
   })
 );
-// Dash_Tweaker(arche1);
+
 arche2.addComponent(
   new Transform({
-    position: new Vector3(28.0, 0.0, 0.0),
-    scale: new Vector3(1.0, 1.5, 1.0),
+    position: new Vector3(27.7, 0.0, -0.2),
+    scale: new Vector3(1.0, 1.0, 1.0),
     rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
   })
 );
 // Dash_Tweaker(arche2);
-scoreBoard.addComponent(
+
+field.addComponent(
   new Transform({
-    position: new Vector3(0.0, 25.0, 0.0),
+    position: new Vector3(0.0, -7.7, 0.0),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
+  })
+);
+// Dash_Tweaker(field);
+
+goalPost.addComponent(
+  new Transform({
+    position: new Vector3(0.0, 0.0, 0.0),
     scale: new Vector3(1.0, 1.0, 1.0),
     rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
   })
 );
 
+scoreBoard.addComponent(
+  new Transform({
+    position: new Vector3(0.0, 15.0, 0.0),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
+  })
+);
+// Dash_Tweaker(scoreBoard);
+
 engine.addEntity(floor);
-engine.addEntity(ground);
+// engine.addEntity(ground);
 
 //Server
 const ws = new WebSocket("ws://localhost:13370");
 
 //Create ball entity
 const ball = new Entity();
-ball.addComponent(new Transform({ position: new Vector3(47.43, 9.48, 58.58) }));
+ball.addComponent(new Transform({ position: new Vector3(56.0, 0.8, 56.0) }));
 ball.addComponent(new GLTFShape("models/PongChamp_Assets_disk.glb"));
 ball.addComponent(
   new OnPointerDown((e) => {
@@ -156,39 +147,57 @@ class BallSystem implements ISystem {
             .direction.multiply(new Vector3().setAll(dt / 1))
         );
     }
-    if (ball.getComponent(Transform).position.x > 65) {
+    if (ball.getComponent(Transform).position.x > 74) {
       ball.getComponent(BallMovement).direction.x =
         ball.getComponent(BallMovement)?.direction.x * -1;
     }
-    if (ball.getComponent(Transform).position.x < 32) {
+    if (ball.getComponent(Transform).position.x < 38) {
       ball.getComponent(BallMovement).direction.x =
         ball.getComponent(BallMovement)?.direction.x * -1;
     }
-    if (ball.getComponent(Transform).position.z > 96) {
-      bTeamScore();
+    if (ball.getComponent(Transform).position.z > 94) {
+      redTeamScored();
     }
-    if (ball.getComponent(Transform).position.z < 21) {
-      aTeamScore();
+    if (ball.getComponent(Transform).position.z < 18) {
+      blueTeamScored();
     }
   }
 }
 
 engine.addSystem(new BallSystem());
 
-function aTeamScore() {
-  ats++;
-  log(ats);
-  reset();
+function blueTeamScored() {
+  blueTeamScore++;
+  log("blueTeamScore", blueTeamScore);
+  reset("blueTeamScore");
 }
-function bTeamScore() {
-  bts++;
-  log(bts);
-  reset();
+function redTeamScored() {
+  redTeamScore++;
+  log("redTeamScore", redTeamScore);
+  reset("redTeamScore");
 }
-function reset() {
-  ball.addComponentOrReplace(
-    new Transform({ position: new Vector3(47.43, 9.46, 58.58) })
-  );
+function reset(teamScored: string) {
+  if (teamScored === "blueTeamScore") {
+    ball.getComponentOrCreate(Transform).position = new Vector3(56, 0.8, 36);
+  }
+  if (teamScored === "redTeamScore") {
+    ball.getComponentOrCreate(Transform).position = new Vector3(56, 0.8, 76);
+  }
+  // ball.addComponentOrReplace(
+  //   new Transform({ position: new Vector3(56.0, 0.8, 56.0) })
+  // );
 
   ball.removeComponent(BallMovement);
 }
+
+const ghost = new Entity();
+
+ghost.addComponentOrReplace(new PlaneShape());
+ghost.addComponentOrReplace(
+  new Transform({
+    position: new Vector3(56, 0, 56),
+  })
+);
+
+engine.addEntity(ghost);
+Dash_Tweaker(ghost);

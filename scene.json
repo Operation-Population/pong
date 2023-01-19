@@ -71,9 +71,9 @@
       "name": "spawn1",
       "default": true,
       "position": {
-        "x": 55,
+        "x": 56,
         "y": 10,
-        "z": 58
+        "z": 56
       },
       "cameraTarget": {
         "x": 8,
