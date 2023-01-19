@@ -1,92 +1,120 @@
-import { Dash_TriggerZone, Dash_Tweaker } from "dcldash"
-let ats = 0
-let bts = 0
+import { Dash_TriggerZone, Dash_Tweaker } from "dcldash";
+let ats = 0;
+let bts = 0;
 //Entities
-const disk = new Entity()
-const goalPost = new Entity()
-const scoreBoard = new Entity()
-const arche1 = new Entity()
-const arche2 = new Entity()
-const glass = new Entity()
-const ground = new Entity()
-const surround = new Entity()
-const floor = new Entity()
+const disk = new Entity();
+const goalPost = new Entity();
+const scoreBoard = new Entity();
+const arche1 = new Entity();
+const arche2 = new Entity();
+const glass = new Entity();
+const ground = new Entity();
+const surround = new Entity();
+const floor = new Entity();
 
 //---
-const camera = new Camera()
+const camera = new Camera();
 
 //adding the models
-disk.addComponent(new GLTFShape('models/PongChamp_Assets_disk.glb'))
-goalPost.addComponent(new GLTFShape('models/PongChamp_Assets_GoalPosts.glb'))
-scoreBoard.addComponent(new GLTFShape('models/PongChamp_Assets_ScoreBoard.glb'))
-arche1.addComponent(new GLTFShape('models/PongChamp_Env_arche1.glb'))
-arche2.addComponent(new GLTFShape('models/PongChamp_Env_arches.glb'))
-glass.addComponent(new GLTFShape('models/PongChamp_Env_ArenaGlass.glb'))
-ground.addComponent(new GLTFShape('models/PongChamp_Env_ArenaGround.glb'))
-surround.addComponent(new GLTFShape('models/PongChamp_Env_ArenaSurround.glb'))
-floor.addComponent(new GLTFShape('models/PongChamp_Env_Floor.glb'))
+disk.addComponent(new GLTFShape("models/PongChamp_Assets_disk.glb"));
+goalPost.addComponent(new GLTFShape("models/PongChamp_Assets_GoalPosts.glb"));
+scoreBoard.addComponent(
+  new GLTFShape("models/PongChamp_Assets_ScoreBoard.glb")
+);
+arche1.addComponent(new GLTFShape("models/PongChamp_Env_arche1.glb"));
+arche2.addComponent(new GLTFShape("models/PongChamp_Env_arches.glb"));
+glass.addComponent(new GLTFShape("models/PongChamp_Env_ArenaGlass.glb"));
+ground.addComponent(new GLTFShape("models/PongChamp_Env_ArenaGround.glb"));
+surround.addComponent(new GLTFShape("models/PongChamp_Env_ArenaSurround.glb"));
+floor.addComponent(new GLTFShape("models/PongChamp_Env_Floor.glb"));
 
-
-
-
-//arche1.setParent(ground)
-//arche2.setParent(ground)
-goalPost.setParent(ground)
-surround.setParent(ground)
-glass.setParent(ground)
-scoreBoard.setParent(ground)
-
-
+arche1.setParent(ground);
+arche2.setParent(ground);
+goalPost.setParent(ground);
+surround.setParent(ground);
+glass.setParent(ground);
+scoreBoard.setParent(ground);
 
 //Position fill
 
-ground.addComponent(new Transform({
-  position: new Vector3(48.000, 0.880, 59.000),
-  scale: new Vector3(1.000, 1.000, 1.000),
-  rotation: new Quaternion().setEuler(0.000, 270.000, 0.000)
-}))
-arche2.addComponent(new Transform({
-  position: new Vector3(22.000, 0.000, 0.000),
-  scale: new Vector3(1.000, 1.000, 1.000),
-  rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
-}))
-scoreBoard.addComponent(new  Transform({
-  position: new Vector3(0.000, 25.000, 0.000),
-  scale: new Vector3(1.000, 1.000, 1.000),
-  rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
-}))
+ground.addComponent(
+  new Transform({
+    position: new Vector3(48.0, 0.88, 59.0),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(0.0, 270.0, 0.0),
+  })
+);
 
+glass.addComponent(
+  new Transform({
+    position: new Vector3(0.0, -25.0, 0.0),
+    scale: new Vector3(1.0, 1.4, 1.0),
+    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
+  })
+);
+Dash_Tweaker(glass);
 
+arche1.addComponent(
+  new Transform({
+    position: new Vector3(0.4, 0.0, 0.0),
+    scale: new Vector3(1.0, 1.5, 1.3),
+    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
+  })
+);
+// Dash_Tweaker(arche1);
+arche2.addComponent(
+  new Transform({
+    position: new Vector3(28.0, 0.0, 0.0),
+    scale: new Vector3(1.0, 1.5, 1.3),
+    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
+  })
+);
+// Dash_Tweaker(arche2);
+scoreBoard.addComponent(
+  new Transform({
+    position: new Vector3(0.0, 25.0, 0.0),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
+  })
+);
 
-engine.addEntity(ground)
-
+engine.addEntity(ground);
 
 //Server
-const ws = new WebSocket("ws://localhost:13370")
+const ws = new WebSocket("ws://localhost:13370");
 
 //Create ball entity
-const ball = new Entity()
-ball.addComponent(new Transform({ position: new Vector3(47.43,9.48,58.58) }))
-ball.addComponent(new GLTFShape('models/PongChamp_Assets_disk.glb'))
+const ball = new Entity();
+ball.addComponent(new Transform({ position: new Vector3(47.43, 9.48, 58.58) }));
+ball.addComponent(new GLTFShape("models/PongChamp_Assets_disk.glb"));
 ball.addComponent(
   new OnPointerDown((e) => {
-    log('test')
-    const userPosition = camera.position
-    const ballPosition = ball.getComponent(Transform).position
-    const direction = userPosition.subtract(ballPosition).multiply(new Vector3(-1,0,-1))
-    ws.send(JSON.stringify(direction.asArray()))
+    log("test");
+    const userPosition = camera.position;
+    const ballPosition = ball.getComponent(Transform).position;
+    const direction = userPosition
+      .subtract(ballPosition)
+      .multiply(new Vector3(-1, 0, -1));
+    if (ball.hasComponent(BallMovement))
+      ball.getComponent(BallMovement).direction.z =
+        ball.getComponent(BallMovement).direction.z * -1;
+    else ball.addComponent(new BallMovement(new Vector3(1.5, 0, 5.4)));
+    // ws.send(JSON.stringify(direction.asArray()))
   })
-)
+);
 
+engine.addEntity(ball);
 
-engine.addEntity(ball)
-
-ws.onmessage = (ev)=>{
-  const json = JSON.parse(ev.data)
-  if (ball.hasComponent(BallMovement)) ball.getComponent(BallMovement).direction = new Vector3(json[0],json[1],json[2])
-  else ball.addComponent(new BallMovement(new Vector3(6.5, 0, 0.4)))
-}
-
+ws.onmessage = (ev) => {
+  const json = JSON.parse(ev.data);
+  if (ball.hasComponent(BallMovement))
+    ball.getComponent(BallMovement).direction = new Vector3(
+      json[0],
+      json[1],
+      json[2]
+    );
+  else ball.addComponent(new BallMovement(new Vector3(6.5, 0, 0.4)));
+};
 
 //Create ball movement component
 @Component("BallMovement")
@@ -109,35 +137,38 @@ class BallSystem implements ISystem {
         );
     }
     if (ball.getComponent(Transform).position.x > 65) {
-      ball.getComponent(BallMovement).direction.x = ball.getComponent(BallMovement)?.direction.x * -1
+      ball.getComponent(BallMovement).direction.x =
+        ball.getComponent(BallMovement)?.direction.x * -1;
     }
     if (ball.getComponent(Transform).position.x < 32) {
-      ball.getComponent(BallMovement).direction.x = ball.getComponent(BallMovement)?.direction.x * -1
+      ball.getComponent(BallMovement).direction.x =
+        ball.getComponent(BallMovement)?.direction.x * -1;
     }
     if (ball.getComponent(Transform).position.z > 96) {
-      bTeamScore()
+      bTeamScore();
     }
     if (ball.getComponent(Transform).position.z < 21) {
-      aTeamScore()
+      aTeamScore();
     }
   }
 }
-engine.addSystem(new BallSystem())
+
+engine.addSystem(new BallSystem());
 
 function aTeamScore() {
-  ats++
-  log(ats)
-  reset()
+  ats++;
+  log(ats);
+  reset();
 }
 function bTeamScore() {
-  bts++
-  log(bts)
-  reset()
+  bts++;
+  log(bts);
+  reset();
 }
 function reset() {
-  
-  ball
-    .addComponentOrReplace(new Transform({ position: new Vector3(47.43,9.46,58.58) }))
+  ball.addComponentOrReplace(
+    new Transform({ position: new Vector3(47.43, 9.46, 58.58) })
+  );
 
-  ball.removeComponent(BallMovement)
+  ball.removeComponent(BallMovement);
 }
