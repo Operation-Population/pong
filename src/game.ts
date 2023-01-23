@@ -15,8 +15,6 @@ const floor = new Entity();
 //---
 const camera = new Camera();
 
-const applauseSound = new Entity();
-
 //adding the models
 disk.addComponent(new GLTFShape("models/PongChamp_Assets_disk.glb"));
 goalPost.addComponent(new GLTFShape("models/PongChamp_Assets_GoalPosts.glb"));
@@ -30,9 +28,6 @@ field.addComponent(new GLTFShape("models/PongChamp_Env_ArenaGround.glb"));
 surround.addComponent(new GLTFShape("models/PongChamp_Env_ArenaSurround.glb"));
 floor.addComponent(new GLTFShape("models/PongChamp_Env_Floor.glb"));
 
-applauseSound.addComponent(
-  new AudioSource(new AudioClip("audios/applause_sound.mp3"))
-);
 // applause.addComponent();
 // applause.playing = false;
 arche1.setParent(floor);
@@ -76,6 +71,7 @@ field.addComponent(
     rotation: new Quaternion().setEuler(0.0, 0.0, 0.0),
   })
 );
+field.addComponent(new AudioSource(new AudioClip("audios/applause_sound.mp3")));
 // Dash_Tweaker(field);
 
 goalPost.addComponent(
@@ -96,11 +92,8 @@ scoreBoard.addComponent(
 
 // Dash_Tweaker(scoreBoard);
 
-applauseSound.addComponent(new Transform());
-
 engine.addEntity(floor);
 // engine.addEntity(ground);
-engine.addEntity(applauseSound);
 
 //Server
 const ws = new WebSocket("ws://localhost:13370");
@@ -199,7 +192,8 @@ function redTeamScored() {
   reset("redTeamScore");
 }
 function reset(teamScored: string) {
-  applauseSound.getComponent(AudioSource).playOnce();
+  field.getComponent(AudioSource).playOnce();
+
   log("loge", ball.getComponent(AudioSource));
   if (teamScored === "blueTeamScore") {
     ball.getComponentOrCreate(Transform).position = new Vector3(56, 0.8, 36);
