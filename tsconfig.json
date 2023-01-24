@@ -6,6 +6,9 @@
     "paths": {
       "dcldash": [
         "node_modules/dcldash/dist/index.d.ts"
+      ],
+      "@dcl/ecs-scene-utils": [
+        "node_modules/@dcl/ecs-scene-utils/dist/index.d.ts"
       ]
     },
     "baseUrl": "."

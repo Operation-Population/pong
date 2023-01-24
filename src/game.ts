@@ -1,4 +1,7 @@
 import { Dash_TriggerZone, Dash_Tweaker } from "dcldash";
+import { Firework } from "./components/fireworks";
+import * as utils from "@dcl/ecs-scene-utils";
+
 let blueTeamScore = 0;
 let redTeamScore = 0;
 //Entities
@@ -14,6 +17,8 @@ const floor = new Entity();
 
 //---
 const camera = new Camera();
+
+const fireworkShape = new GLTFShape("models/Firework_03.gltf");
 
 //adding the models
 disk.addComponent(new GLTFShape("models/PongChamp_Assets_disk.glb"));
@@ -178,6 +183,76 @@ class BallSystem implements ISystem {
     }
   }
 }
+let fireworks: Firework[] = [];
+
+export const fireworkWest = new Firework(
+  fireworkShape,
+  new Transform({
+    position: new Vector3(-0.1, -0.7, -36.8),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(25.0, 20.0, 15.0),
+  })
+);
+// Dash_Tweaker(fireworkWest);
+
+export const fireworkEast = new Firework(
+  fireworkShape,
+  new Transform({
+    position: new Vector3(-0.1, -0.7, 36.2),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(25.0, 200.0, 15.0),
+  })
+);
+
+export const fireworkNorth = new Firework(
+  fireworkShape,
+  new Transform({
+    position: new Vector3(-47.1, -0.7, 1.2),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(25.0, 110.0, 15.0),
+  })
+);
+
+export const fireworkSouth = new Firework(
+  fireworkShape,
+  new Transform({
+    position: new Vector3(45.9, -0.7, 2.2),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(25.0, 290.0, 15.0),
+  })
+);
+
+export const fireworkCenter = new Firework(
+  fireworkShape,
+  new Transform({
+    position: new Vector3(-0.1, 0.1, -0.8),
+    scale: new Vector3(1.0, 1.0, 1.0),
+    rotation: new Quaternion().setEuler(25.0, 290.0, 15.0),
+  })
+);
+
+fireworkWest.setParent(floor);
+fireworkEast.setParent(floor);
+fireworkNorth.setParent(floor);
+fireworkSouth.setParent(floor);
+// fireworkCenter.setParent(floor);
+
+fireworks.push(fireworkEast);
+fireworks.push(fireworkNorth);
+fireworks.push(fireworkSouth);
+fireworks.push(fireworkWest);
+fireworks.push(fireworkWest);
+// fireworks.push(fireworkCenter);
+Dash_Tweaker(fireworkCenter);
+
+function setFireWorks() {
+  for (let index = 0; index < fireworks.length; index++) {
+    // fireworks[index].launch();
+    utils.setTimeout(1000, () => {
+      fireworks[index].launch();
+    });
+  }
+}
 
 engine.addSystem(new BallSystem());
 
@@ -192,6 +267,7 @@ function redTeamScored() {
   reset("redTeamScore");
 }
 function reset(teamScored: string) {
+  setFireWorks();
   field.getComponent(AudioSource).playOnce();
 
   log("loge", ball.getComponent(AudioSource));
